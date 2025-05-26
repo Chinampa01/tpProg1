@@ -11,6 +11,10 @@ public class Mago {
     private Image imagenDer;
     private Image imagenIzq;
     private boolean mirandoDerecha;
+    private int vida;
+    private int vidaMax;
+    private int mana;
+    private int manaMax;
 
     public Mago(int x, int y, int desplazamiento) {
         this.x = x;
@@ -18,17 +22,27 @@ public class Mago {
         this.desplazamiento = desplazamiento;
         this.imagenDer = Herramientas.cargarImagen("assets/mago.der.png");
         this.imagenIzq = Herramientas.cargarImagen("assets/mago.izq.png");
-        this.mirandoDerecha = true; // Por defecto, mira a la derecha
+        this.mirandoDerecha = true;
+        this.vida = 100;
+        this.vidaMax = 100;
+        this.mana = 50;
+        this.manaMax = 50;
     }
-//imagen de mago 
+
+    public int getVida() { return vida; }
+    public int getVidaMax() { return vidaMax; }
+    public int getMana() { return mana; }
+    public int getManaMax() { return manaMax; }
+    public void usarMana(int cantidad) { mana = Math.max(0, mana - cantidad); }
+
     public void dibujarse(Entorno entorno) {
         if (mirandoDerecha) {
-            entorno.dibujarImagen(imagenDer, x, y, 0, 0.07      );
+            entorno.dibujarImagen(imagenDer, x, y, 0, 0.07);
         } else {
             entorno.dibujarImagen(imagenIzq, x, y, 0, 0.07);
         }
     }
-//moviento del mago
+
     public void moverIzquierda() {
         x -= desplazamiento;
         mirandoDerecha = false;
@@ -47,4 +61,3 @@ public class Mago {
         y += desplazamiento;
     }
 }
-
