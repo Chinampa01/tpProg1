@@ -3,11 +3,14 @@ package juego;
 import java.awt.Image;
 import entorno.Entorno;
 import entorno.Herramientas;
+import java.lang.Math;
 
 public class Mago {
     private int x;
     private int y;
     private int desplazamiento;
+    private double angulo;
+    private int radio;
     private Image imagenDer;
     private Image imagenIzq;
     private boolean mirandoDerecha;
@@ -16,10 +19,12 @@ public class Mago {
     private int mana;
     private int manaMax;
 
-    public Mago(int x, int y, int desplazamiento) {
+    public Mago(int x, int y, int desplazamiento, double angulo, int radio) {
         this.x = x;
         this.y = y;
         this.desplazamiento = desplazamiento;
+        this.angulo = angulo;
+        this.radio = radio;
         this.imagenDer = Herramientas.cargarImagen("assets/mago.der.png");
         this.imagenIzq = Herramientas.cargarImagen("assets/mago.izq.png");
         this.mirandoDerecha = true;
@@ -43,6 +48,10 @@ public class Mago {
         }
     }
 
+    public boolean chocasteCon (Entorno e){
+        return x <= radio || y <= radio || x >= e.ancho() - radio || y >= e.alto() - radio;
+    }
+
     public void moverIzquierda() {
         x -= desplazamiento;
         mirandoDerecha = false;
@@ -59,5 +68,9 @@ public class Mago {
 
     public void moverAbajo() {
         y += desplazamiento;
+    }
+
+    public void rebotar (){
+        angulo += Math.PI/2;
     }
 }

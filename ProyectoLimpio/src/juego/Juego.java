@@ -4,7 +4,6 @@ import java.awt.Image;
 import entorno.Entorno;
 import entorno.Herramientas;
 import entorno.InterfaceJuego;
-import java.util.Random;
 
 
 public class Juego extends InterfaceJuego {
@@ -12,13 +11,17 @@ public class Juego extends InterfaceJuego {
     private Menu menu;
     private Image imgFondo;
     private Mago mago;
-    private Rock [] rocas;
+    private Roca [] rocas;
 
 
     public Juego() {
         this.entorno = new Entorno(this, "Proyecto para TP", 800, 600);
-        this.mago = new Mago(400, 300, 6);
+        this.mago = new Mago(400, 300, 6, Math.PI / 4, 30); 
         this.imgFondo = Herramientas.cargarImagen("assets/fondo.png");
+
+        if (mago.chocasteCon(entorno)){
+            mago.rebotar();
+        }
 
         this.menu = new Menu(
             200, 510, 400, 80,
@@ -27,13 +30,14 @@ public class Juego extends InterfaceJuego {
             "assets/hechizoAgua.png"
         );
 
-        Random rand=new Random();
-        rocas=new Rock[6];
-        for(int j=0;j<rocas.length;j++) {
-            int x=rand.nextInt(500)+50;            
-            int y=rand.nextInt(500)+50;
-            rocas[j]=new Rock(x,y,false);        
-        }
+
+        rocas = new Roca[6];
+        rocas[0] = new Roca(100, 100, false);
+        rocas[1] = new Roca(550, 150, false);
+        rocas[2] = new Roca(250, 450, false);
+        rocas[3] = new Roca(500, 250, false);
+        rocas[4] = new Roca(150, 350, false);
+        rocas[5] = new Roca(250, 50, false);
 
         this.entorno.iniciar();
     }
