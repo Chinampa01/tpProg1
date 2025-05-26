@@ -4,12 +4,16 @@ import java.awt.Image;
 import entorno.Entorno;
 import entorno.Herramientas;
 import entorno.InterfaceJuego;
+import java.util.Random;
+
 
 public class Juego extends InterfaceJuego {
     private Entorno entorno;
     private Menu menu;
     private Image imgFondo;
     private Mago mago;
+    private Rock [] rocas;
+
 
     public Juego() {
         this.entorno = new Entorno(this, "Proyecto para TP", 800, 600);
@@ -22,6 +26,14 @@ public class Juego extends InterfaceJuego {
             "assets/hechizoFuego.png",
             "assets/hechizoAgua.png"
         );
+
+        Random rand=new Random();
+        rocas=new Rock[6];
+        for(int j=0;j<rocas.length;j++) {
+            int x=rand.nextInt(500)+50;            
+            int y=rand.nextInt(500)+50;
+            rocas[j]=new Rock(x,y,false);        
+        }
 
         this.entorno.iniciar();
     }
@@ -37,6 +49,12 @@ public class Juego extends InterfaceJuego {
             if (entorno.estaPresionada(entorno.TECLA_IZQUIERDA)) mago.moverIzquierda();
             if (entorno.estaPresionada(entorno.TECLA_ARRIBA)) mago.moverArriba();
             if (entorno.estaPresionada(entorno.TECLA_ABAJO)) mago.moverAbajo();
+
+            
+
+            for(int i=0;i<rocas.length;i++) {
+             rocas[i].dibujarse(entorno);  
+              }
 
             // Dibuja el mago
             mago.dibujarse(entorno);
