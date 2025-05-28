@@ -18,18 +18,14 @@ public class HechizoFuego extends HechizoVisual {
         this.anguloFinal = angulo;
     }
 
-    @Override
     public void dibujar(Entorno entorno, int tickActual) {
         if (tickActual - tickCreacion < ticksExplosion) {
-            // Explosión sigue al mago
             this.x = mago.getX();
             this.y = mago.getY();
             entorno.dibujarImagen(imagen, x, y, angulo, escala);
         } else {
-            // FinalFlash aparece fuera del radio del mago (ajustado por el tamaño de la imagen)
             if (!finalFlashPosicionado) {
                 double radioFinalFlash = mago.getRadio() + 10;
-                // Ajuste extra: suma la mitad del ancho de la imagen escalada
                 double ajuste = (imagenFinal.getWidth(null) * escala) / 2.0;
                 double distancia = radioFinalFlash + ajuste;
                 xFinal = mago.getX() + Math.cos(anguloFinal) * distancia;

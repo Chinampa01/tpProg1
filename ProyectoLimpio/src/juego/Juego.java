@@ -8,17 +8,19 @@ import entorno.InterfaceJuego;
 public class Juego extends InterfaceJuego {
     private Entorno entorno;
     private Menu menu;
-    private Image imgFondo, imgBombaFuego, imgFinalFlash, imgRafagaAgua;
+    private Image imgFondo, imgFondoMenu, imgMenuLateral, imgBombaFuego, imgFinalFlash, imgRafagaAgua;
     private Mago mago;
     private Roca[] rocas;
     private HechizoVisual hechizoActivo;
     private String hechizoSeleccionado = "agua";
     private int tickActual = 0;
+    private MenuLateral menuLateralIzq, menuLateralDer;
 
     public Juego() {
         this.entorno = new Entorno(this, "Proyecto para TP", 800, 600);
         this.mago = new Mago(400, 300, 2, Math.PI / 4, 30);
         this.imgFondo = Herramientas.cargarImagen("assets/fondo.png");
+        this.imgFondoMenu = Herramientas.cargarImagen("assets/fondoMenu.png");
         imgBombaFuego = Herramientas.cargarImagen("assets/explosionDeFuego.png");
         imgRafagaAgua = Herramientas.cargarImagen("assets/rafagaDeAgua.png");
         imgFinalFlash = Herramientas.cargarImagen("assets/finalFlash.png");
@@ -33,6 +35,8 @@ public class Juego extends InterfaceJuego {
             70, 70, 
             70, 70  
         );
+        menuLateralIzq = new MenuLateral(100, 570, Herramientas.cargarImagen("assets/menuLateral.png"));
+        menuLateralDer = new MenuLateral(700, 570, Herramientas.cargarImagen("assets/menuLateral.png"));
 
         rocas = new Roca[6];
         rocas[0] = new Roca(100, 100, false);
@@ -65,7 +69,10 @@ public class Juego extends InterfaceJuego {
             tickActual = entorno.numeroDeTick();
 
             entorno.dibujarImagen(imgFondo, 400, 300, 0, 0.8);
+            entorno.dibujarImagen(imgFondoMenu, 400, 560, 0, 1.5);
             menu.dibujar(entorno, mago);
+            menuLateralIzq.dibujar(entorno);
+            menuLateralDer.dibujar(entorno);
 
             // Solo permitir movimiento si NO hay hechizo activo
             boolean puedeMover = hechizoActivo == null || !hechizoActivo.estaActivo(tickActual);
@@ -137,7 +144,10 @@ public class Juego extends InterfaceJuego {
                         hechizoActivo = new HechizoVisual(x, y, angulo, imgRafagaAgua, 0.2, tickActual, 20);
                     }
                     if (hechizoSeleccionado.equals("fuego")) {
-                        hechizoActivo = new HechizoFuego(mago, angulo, imgBombaFuego, imgFinalFlash, 0.35, tickActual, 25, 12);
+                        if (mago.getMana() >= 10) { 
+                            hechizoActivo = new HechizoFuego(mago, angulo, imgBombaFuego, imgFinalFlash, 0.35, tickActual, 25, 12);
+                            mago.usarMana(10); 
+                        }
                     }
                 }
             }

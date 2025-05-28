@@ -12,7 +12,6 @@ public class Menu {
     private Barra barraVida, barraMana;
     private String hechizoSeleccionado = "agua";
 
-    // Posiciones para los botones
     private static final int FUEGO_X = 316;
     private static final int FUEGO_Y = 545;
     private static final int AGUA_X = 229;
@@ -29,8 +28,8 @@ public class Menu {
         Image imgAgua = Herramientas.cargarImagen(rutaAgua);
         this.botonFuego = new Boton(FUEGO_X, FUEGO_Y, anchoBotonFuego, altoBotonFuego, imgFuego);
         this.botonAgua = new Boton(AGUA_X, AGUA_Y, anchoBotonAgua, altoBotonAgua, imgAgua);
-        this.barraVida = new Barra(400, 558, 180, 15, new Color(60, 30, 0), Color.RED);
-        this.barraMana = new Barra(400, 580, 180, 15, new Color(60, 30, 0), Color.BLUE);
+        this.barraVida = new Barra(400, 558, 180, 15, new Color(60, 30, 0), new Color(205, 30, 30));
+        this.barraMana = new Barra(400, 580, 180, 15, new Color(60, 30, 0), new Color(0, 100, 255));
     }
 
     public void setHechizoSeleccionado(String hechizo) {
@@ -46,13 +45,13 @@ public class Menu {
             entorno.dibujarRectangulo(
             botonFuego.getX() + botonFuego.getAncho()/2,
             botonFuego.getY() + botonFuego.getAlto()/2,
-            botonFuego.getAncho()+8, botonFuego.getAlto()+8, 0, new Color(255, 80, 0));
+            botonFuego.getAncho()+6, botonFuego.getAlto()+6, 0, new Color(255, 80, 0));
         }
         if ("agua".equals(hechizoSeleccionado)) {
             entorno.dibujarRectangulo(
             botonAgua.getX() + botonAgua.getAncho()/2,
             botonAgua.getY() + botonAgua.getAlto()/2,
-            botonAgua.getAncho()+8, botonAgua.getAlto()+8, 0, new Color(0, 180, 255));
+            botonAgua.getAncho()+6, botonAgua.getAlto()+6, 0, new Color(0, 180, 255));
         }
         if (botonFuego != null) {
             botonFuego.dibujar(entorno);
