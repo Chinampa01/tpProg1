@@ -33,7 +33,10 @@ public class Mago {
         this.mana = 50;
         this.manaMax = 50;
     }
-
+    public int getX() { return x; }
+    public int getY() { return y; }
+    public int getDesplazamiento() {return desplazamiento;}
+    public int getRadio() { return radio; }
     public int getVida() { return vida; }
     public int getVidaMax() { return vidaMax; }
     public int getMana() { return mana; }
@@ -46,10 +49,6 @@ public class Mago {
         } else {
             entorno.dibujarImagen(imagenIzq, x, y, 0, 0.07);
         }
-    }
-
-    public boolean chocasteCon (Entorno e){
-        return x <= radio || y <= radio || x >= e.ancho() - radio || y >= e.alto() - radio;
     }
 
     public void moverIzquierda() {
@@ -70,7 +69,4 @@ public class Mago {
         y += desplazamiento;
     }
 
-    public void rebotar (){
-        angulo += Math.PI/2;
-    }
 }

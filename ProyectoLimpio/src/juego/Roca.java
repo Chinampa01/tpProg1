@@ -10,6 +10,8 @@ public class Roca {
     private boolean colision;    
     private Image imagen;
     
+    public int getX() { return x; }
+    public int getY() { return y; }
     
     public Roca(int x, int y, boolean colision) {
         this.x=x;        
@@ -19,6 +21,6 @@ public class Roca {
     }    
     
     public void dibujarse(Entorno entorno) {
-        entorno.dibujarImagen(imagen, x,y,0.07,0.07);    
+        entorno.dibujarImagen(imagen, x,y,0.07,0.05);    
     }
 }
