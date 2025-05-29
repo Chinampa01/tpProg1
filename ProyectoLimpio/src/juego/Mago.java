@@ -55,18 +55,16 @@ public class Mago {
         x -= desplazamiento;
         mirandoDerecha = false;
     }
-
     public void moverDerecha() {
-        x += desplazamiento;
-        mirandoDerecha = true;
+        x += desplazamiento; 
+        mirandoDerecha = true;}
+    public void moverArriba() {y -= desplazamiento;}
+    public void moverAbajo() {y += desplazamiento;}
+
+    public void recibirDaño(int cantidad) {
+        vida = Math.max(0, vida - cantidad);
     }
 
-    public void moverArriba() {
-        y -= desplazamiento;
-    }
 
-    public void moverAbajo() {
-        y += desplazamiento;
-    }
 
 }
