@@ -35,4 +35,14 @@ public class HechizoFuego extends HechizoVisual {
             entorno.dibujarImagen(imagenFinal, xFinal, yFinal, anguloFinal, escala);
         }
     }
+
+    public int getTicksExplosion() {
+        return ticksExplosion;
+    }
+    public double getXFinal() {
+        return xFinal;
+    }
+    public double getYFinal() {
+        return yFinal;
+    }
 }

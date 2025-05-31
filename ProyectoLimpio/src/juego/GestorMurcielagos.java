@@ -11,6 +11,7 @@ public class GestorMurcielagos {
     private final int maxVivos;
     private final int total;
     private final Random random;
+    private int totalGolbatsEnPantalla = 0;
 
     public GestorMurcielagos(int maxVivos, int total) {
         this.maxVivos = maxVivos;
@@ -20,7 +21,7 @@ public class GestorMurcielagos {
         this.murcielagos = new ArrayList<>();
         this.random = new Random();
         for (int i = 0; i < maxVivos && murcielagosRestantes > 0; i++) {
-            murcielagos.add(crearMurcielagoFueraPantalla());
+            murcielagos.add(crearMurcielagoFueraPantalla(false));
             murcielagosRestantes--;
         }
     }
@@ -31,10 +32,12 @@ public class GestorMurcielagos {
             m.cambiarAngulo(mago.getX(), mago.getY());
             m.mover();
             m.dibujarse(entorno);
-            if (!barreraActiva && colision(mago.getX(), mago.getY(), m.x, m.y, 25)) {
-                mago.recibirDaño(1);
+            int radioColision = m.esGolbat() ? 30 : 25;
+            int dano = m.esGolbat() ? 2 : 1;
+            if (!barreraActiva && colision(mago.getX(), mago.getY(), m.x, m.y, radioColision)) {
+                mago.recibirDaño(dano);
             }
-            if (simularMuerte || m.y < -30 || m.y > 630 || m.x < -30 || m.x > 830) {
+            if (simularMuerte || m.y < -30 || m.y > 630 || m.x < -30 || m.x > 830 || (m.esGolbat() && m.estaMuerto())) {
                 muertos.add(m);
             }
         }
@@ -42,8 +45,15 @@ public class GestorMurcielagos {
             murcielagos.remove(m);
             murcielagosMatados++;
         }
+        // GOLBAT: Aparece después de 25 muertes
+        if (murcielagosMatados >= 25 && totalGolbatsEnPantalla < 1 && murcielagosRestantes > 0) {
+            murcielagos.add(crearMurcielagoFueraPantalla(true));
+            totalGolbatsEnPantalla++;
+            murcielagosRestantes--;
+        }
         while (murcielagos.size() < maxVivos && murcielagosRestantes > 0) {
-            murcielagos.add(crearMurcielagoFueraPantalla());
+            boolean esGolbat = murcielagosMatados >= 25;
+            murcielagos.add(crearMurcielagoFueraPantalla(esGolbat));
             murcielagosRestantes--;
         }
     }
@@ -53,11 +63,16 @@ public class GestorMurcielagos {
     public int getCantidadVivos() { return murcielagos.size(); }
     public ArrayList<Murcielago> getMurcielagos() { return murcielagos; }
 
+    // Permitir que Juego incremente el contador de muertes
+    public void incrementarMatados() {
+        murcielagosMatados++;
+    }
+
     private boolean colision(int x1, int y1, double x2, double y2, int distancia) {
         return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) < distancia * distancia;
     }
 
-    private Murcielago crearMurcielagoFueraPantalla() {
+    private Murcielago crearMurcielagoFueraPantalla(boolean esGolbat) {
         int borde = random.nextInt(4);
         int x = 0, y = 0;
         switch (borde) {
@@ -78,6 +93,6 @@ public class GestorMurcielagos {
                 y = random.nextInt(500);
                 break;
         }
-        return new Murcielago(x, y);
+        return new Murcielago(x, y, esGolbat);
     }
 }

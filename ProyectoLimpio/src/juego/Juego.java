@@ -1,6 +1,7 @@
 package juego;
 
 import java.awt.Image;
+import java.util.ArrayList;
 import entorno.Entorno;
 import entorno.Herramientas;
 import entorno.InterfaceJuego;
@@ -88,7 +89,7 @@ public class Juego extends InterfaceJuego {
                 return;
             }
             // CONGRATULATIONS
-            if (gestorMurcielagos.getMurcielagosMatados() >= TOTAL_MURCIELAGOS) {
+            if (gestorMurcielagos.getMurcielagosMatados() > TOTAL_MURCIELAGOS - 1) {
                 Image imgCongrats = Herramientas.cargarImagen("assets/congratulations.png");
                 entorno.dibujarImagen(imgCongrats, 400, 400, 0, 0.8);
                 return;
@@ -116,14 +117,15 @@ public class Juego extends InterfaceJuego {
                     if (nuevoY > mago.getY()) mago.moverAbajo();
                 }
             }
-            boolean simularMuerte = entorno.sePresiono('k');
-            int murcielagosAntes = gestorMurcielagos.getMurcielagosMatados();
-            gestorMurcielagos.actualizar(mago, simularMuerte, entorno, barreraActiva);
-            int murcielagosAhora = gestorMurcielagos.getMurcielagosMatados();
-            int murcielagosMatadosEnTick = murcielagosAhora - murcielagosAntes;
-            for (int i = 0; i < murcielagosMatadosEnTick; i++) {
-                panelHechizosLateral.notificarMurcielagoMatado();
-            }
+            // Eliminar simulación de muerte con tecla 'k'
+            // boolean simularMuerte = entorno.sePresiono('k');
+            // int murcielagosAntes = gestorMurcielagos.getMurcielagosMatados();
+            gestorMurcielagos.actualizar(mago, false, entorno, barreraActiva);
+            // int murcielagosAhora = gestorMurcielagos.getMurcielagosMatados();
+            // int murcielagosMatadosEnTick = murcielagosAhora - murcielagosAntes;
+            // for (int i = 0; i < murcielagosMatadosEnTick; i++) {
+            //     panelHechizosLateral.notificarMurcielagoMatado();
+            // }
             entorno.cambiarFont("Arial", 22, java.awt.Color.YELLOW);
             entorno.escribirTexto("Murciélagos: "+gestorMurcielagos.getMurcielagosMatados(), menuLateralDer.getX()-70, menuLateralDer.getY()+10);
             if (entorno.sePresiono('1')) {
@@ -141,13 +143,16 @@ public class Juego extends InterfaceJuego {
                 int botonAguaX = 229, botonAguaY = 535, botonAguaAncho = 70, botonAguaAlto = 70;
                 boolean clickEnFuego = mouseX >= botonFuegoX && mouseX <= botonFuegoX + botonFuegoAncho && mouseY >= botonFuegoY && mouseY <= botonFuegoY + botonFuegoAlto;
                 boolean clickEnAgua = mouseX >= botonAguaX && mouseX <= botonAguaX + botonAguaAncho && mouseY >= botonAguaY && mouseY <= botonAguaY + botonAguaAlto;
+                // Evitar lanzar hechizos si el click fue sobre el menú o los menús laterales
+                boolean clickEnMenuLateralIzq = mouseX >= menuLateralIzq.getX() - 60 && mouseX <= menuLateralIzq.getX() + 60 && mouseY >= menuLateralIzq.getY() - 60 && mouseY <= menuLateralIzq.getY() + 60;
+                boolean clickEnMenuLateralDer = mouseX >= menuLateralDer.getX() - 60 && mouseX <= menuLateralDer.getX() + 60 && mouseY >= menuLateralDer.getY() - 60 && mouseY <= menuLateralDer.getY() + 60;
                 if (clickEnFuego) {
                     hechizoSeleccionado = "fuego";
                     menu.setHechizoSeleccionado("fuego");
                 } else if (clickEnAgua) {
                     hechizoSeleccionado = "agua";
                     menu.setHechizoSeleccionado("agua");
-                } else if (puedeMover) {
+                } else if (puedeMover && !clickEnMenuLateralIzq && !clickEnMenuLateralDer && mouseY < 510) {
                     double dx = entorno.mouseX() - mago.getX();
                     double dy = entorno.mouseY() - mago.getY();
                     double angulo = Math.atan2(dy, dx);
@@ -191,6 +196,46 @@ public class Juego extends InterfaceJuego {
                 entorno.dibujarCirculo(mago.getX(), mago.getY(), mago.getRadio()+20, new java.awt.Color(0,200,255,120));
             } else if (barreraActiva) {
                 barreraActiva = false;
+            }
+            // --- COLISIONES DE HECHIZOS CON MURCIELAGOS (ZUBAT Y GOLBAT) ---
+            if (hechizoActivo != null && hechizoActivo.estaActivo(tickActual)) {
+                ArrayList<Murcielago> murcielagos = gestorMurcielagos.getMurcielagos();
+                double radioHechizo = 0;
+                double xHechizo = 0;
+                double yHechizo = 0;
+                // En la colisión de hechizo de fuego, aumentar el radio de efecto para que cubra mejor el área visual
+                if (hechizoActivo instanceof HechizoFuego) {
+                    HechizoFuego hf = (HechizoFuego) hechizoActivo;
+                    boolean esExplosion = tickActual - hf.tickCreacion < hf.getTicksExplosion();
+                    if (esExplosion) {
+                        xHechizo = mago.getX();
+                        yHechizo = mago.getY();
+                        radioHechizo = 130; // Aumenta el radio para cubrir el área visual de la explosión
+                    } else {
+                        xHechizo = hf.getXFinal();
+                        yHechizo = hf.getYFinal();
+                        radioHechizo = 80; // Aumenta el radio del final flash
+                    }
+                } else {
+                    xHechizo = hechizoActivo.x;
+                    yHechizo = hechizoActivo.y;
+                    radioHechizo = 40;
+                }
+                for (Murcielago m : new ArrayList<>(murcielagos)) {
+                    double dx = m.x - xHechizo;
+                    double dy = m.y - yHechizo;
+                    double dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < radioHechizo) {
+                        boolean esRafagaAgua = hechizoActivo instanceof HechizoVisual && !(hechizoActivo instanceof HechizoFuego);
+                        boolean esFuego = hechizoActivo instanceof HechizoFuego;
+                        m.recibirGolpe(esRafagaAgua, esFuego);
+                        if (m.estaMuerto()) {
+                            murcielagos.remove(m);
+                            gestorMurcielagos.incrementarMatados();
+                            panelHechizosLateral.notificarMurcielagoMatado();
+                        }
+                    }
+                }
             }
             if (hechizoActivo != null && hechizoActivo.estaActivo(tickActual)) {
                 hechizoActivo.dibujar(entorno, tickActual);

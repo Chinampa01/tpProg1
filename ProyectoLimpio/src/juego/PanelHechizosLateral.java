@@ -68,7 +68,7 @@ public class PanelHechizosLateral {
             cooldownBarrera = COOLDOWN_MURCIELAGOS;
         }
     }
-    // Llamar a este método cada vez que se mate un murciélago
+    // Llamar a este método cada vez que se mate un murciélago (solo si fue eliminado por el jugador, no por salir de pantalla)
     public void notificarMurcielagoMatado() {
         if (cooldownCuracion > 0) cooldownCuracion--;
         if (cooldownBarrera > 0) cooldownBarrera--;

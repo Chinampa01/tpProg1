@@ -11,39 +11,50 @@ public class Murcielago {
     private Image imagenDer;
     private Image imagenIzq;
     private double angulo;
-    private double velocidad = 1;
+    private double velocidad;
     private boolean mirandoDer;
+    private boolean esGolbat;
+    private int golpesRecibidos;
 
-    public Murcielago(double x, double y) {
+    public Murcielago(double x, double y, boolean esGolbat) {
         this.x = x;
         this.y = y;
         this.angulo = 0;
-
-        this.imagenDer = Herramientas.cargarImagen("assets/mago.izq.png");
-        this.imagenIzq = Herramientas.cargarImagen("assets/mago.der.png"); 
-
+        this.esGolbat = esGolbat;
+        this.golpesRecibidos = 0;
+        if (esGolbat) {
+            this.imagenDer = Herramientas.cargarImagen("assets/golbatDer.png");
+            this.imagenIzq = Herramientas.cargarImagen("assets/golbatIzq.PNG");
+            this.velocidad = 1.3;
+        } else {
+            this.imagenDer = Herramientas.cargarImagen("assets/zubatDer.png");
+            this.imagenIzq = Herramientas.cargarImagen("assets/zubatIzq.PNG");
+            this.velocidad = 1.0;
+        }
         this.mirandoDer = true;
     }
 
     public void dibujarse(Entorno entorno) {
-        entorno.dibujarCirculo(this.x, this.y, 4, Color.RED);
-
-        if (mirandoDer) {
-            entorno.dibujarImagen(imagenDer, x, y, 0, 0.04);
+        if (esGolbat) {
+            entorno.dibujarCirculo(this.x, this.y, 8, Color.MAGENTA);
+            if (mirandoDer) {
+                entorno.dibujarImagen(imagenDer, x, y, 0, 0.08);
+            } else {
+                entorno.dibujarImagen(imagenIzq, x, y, 0, 0.08);
+            }
         } else {
-            entorno.dibujarImagen(imagenIzq, x, y, 0, 0.04);
+            entorno.dibujarCirculo(this.x, this.y, 4, Color.RED);
+            if (mirandoDer) {
+                entorno.dibujarImagen(imagenDer, x, y, 0, 0.04);
+            } else {
+                entorno.dibujarImagen(imagenIzq, x, y, 0, 0.04);
+            }
         }
     }
 
     public void cambiarAngulo(double x2, double y2) {
         this.angulo = Math.atan2(y2 - this.y, x2 - this.x);
-        
-        // Cambia si mira a la derecha o izquierda
-        if (x2 > this.x) {
-            this.mirandoDer = true;
-        } else {
-            this.mirandoDer = false;
-        }
+        this.mirandoDer = x2 > this.x;
     }
 
     public void mover() {
@@ -59,4 +70,24 @@ public class Murcielago {
         this.mirandoDer = mirandoDer;
     }
 
+    public void recibirGolpe(boolean esRafagaAgua, boolean esFuego) {
+        if (esGolbat) {
+            if (esFuego) {
+                golpesRecibidos = 2; // Muere instantáneamente con fuego
+            } else if (esRafagaAgua) {
+                golpesRecibidos++;
+            }
+            // Otros hechizos no afectan a Golbat
+        } else {
+            golpesRecibidos = 1; // Para Zubat, cualquier golpe lo mata
+        }
+    }
+
+    public boolean esGolbat() {
+        return esGolbat;
+    }
+
+    public boolean estaMuerto() {
+        return esGolbat ? golpesRecibidos >= 2 : golpesRecibidos >= 1;
+    }
 }
