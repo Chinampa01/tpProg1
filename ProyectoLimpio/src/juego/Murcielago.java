@@ -8,30 +8,34 @@ import entorno.Herramientas;
 public class Murcielago {
     double x;
     double y;
-    private Image imagenDer;
-    private Image imagenIzq;
+    private final Image imagenDer;
+    private final Image imagenIzq;
     private double angulo;
-    private double velocidad;
+    private final double velocidad;
     private boolean mirandoDer;
-    private boolean esGolbat;
+    private final boolean esGolbat;
     private int golpesRecibidos;
 
     public Murcielago(double x, double y, boolean esGolbat) {
-        this.x = x;
-        this.y = y;
-        this.angulo = 0;
-        this.esGolbat = esGolbat;
-        this.golpesRecibidos = 0;
-        if (esGolbat) {
-            this.imagenDer = Herramientas.cargarImagen("assets/golbatDer.png");
-            this.imagenIzq = Herramientas.cargarImagen("assets/golbatIzq.PNG");
-            this.velocidad = 1.3;
-        } else {
-            this.imagenDer = Herramientas.cargarImagen("assets/zubatDer.png");
-            this.imagenIzq = Herramientas.cargarImagen("assets/zubatIzq.PNG");
-            this.velocidad = 1.0;
+        try {
+            this.x = x;
+            this.y = y;
+            this.angulo = 0;
+            this.esGolbat = esGolbat;
+            this.golpesRecibidos = 0;
+            if (esGolbat) {
+                this.imagenDer = Herramientas.cargarImagen("assets/golbatDer.png");
+                this.imagenIzq = Herramientas.cargarImagen("assets/golbatIzq.PNG");
+                this.velocidad = 1.3;
+            } else {
+                this.imagenDer = Herramientas.cargarImagen("assets/zubatDer.png");
+                this.imagenIzq = Herramientas.cargarImagen("assets/zubatIzq.PNG");
+                this.velocidad = 1.0;
+            }
+            this.mirandoDer = true;
+        } catch (Exception e) {
+            throw new RuntimeException("Error al crear Murcielago: no se pudo cargar la imagen o inicializar el objeto", e);
         }
-        this.mirandoDer = true;
     }
 
     public void dibujarse(Entorno entorno) {
@@ -73,13 +77,12 @@ public class Murcielago {
     public void recibirGolpe(boolean esRafagaAgua, boolean esFuego) {
         if (esGolbat) {
             if (esFuego) {
-                golpesRecibidos = 2; // Muere instantáneamente con fuego
+                golpesRecibidos = 2;
             } else if (esRafagaAgua) {
                 golpesRecibidos++;
             }
-            // Otros hechizos no afectan a Golbat
         } else {
-            golpesRecibidos = 1; // Para Zubat, cualquier golpe lo mata
+            golpesRecibidos = 1;
         }
     }
 

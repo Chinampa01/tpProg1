@@ -20,18 +20,22 @@ public class Mago {
     private int manaMax;
 
     public Mago(int x, int y, int desplazamiento, double angulo, int radio) {
-        this.x = x;
-        this.y = y;
-        this.desplazamiento = desplazamiento;
-        this.angulo = angulo;
-        this.radio = radio;
-        this.imagenDer = Herramientas.cargarImagen("assets/mago.der.png");
-        this.imagenIzq = Herramientas.cargarImagen("assets/mago.izq.png");
-        this.mirandoDerecha = true;
-        this.vida = 100;
-        this.vidaMax = 100;
-        this.mana = 50;
-        this.manaMax = 50;
+        try {
+            this.x = x;
+            this.y = y;
+            this.desplazamiento = desplazamiento;
+            this.angulo = angulo;
+            this.radio = radio;
+            this.imagenDer = Herramientas.cargarImagen("assets/mago.der.png");
+            this.imagenIzq = Herramientas.cargarImagen("assets/mago.izq.png");
+            this.mirandoDerecha = true;
+            this.vida = 10;
+            this.vidaMax = 10;
+            this.mana = 30; // Solo permite 3 hechizos de fuego (10 de maná cada uno)
+            this.manaMax = 30;
+        } catch (Exception e) {
+            throw new RuntimeException("Error al crear Mago: no se pudo cargar la imagen o inicializar el objeto", e);
+        }
     }
     public int getX() { return x; }
     public int getY() { return y; }
@@ -44,10 +48,14 @@ public class Mago {
     public void usarMana(int cantidad) { mana = Math.max(0, mana - cantidad); }
 
     public void dibujarse(Entorno entorno) {
-        if (mirandoDerecha) {
-            entorno.dibujarImagen(imagenDer, x, y, 0, 0.07);
-        } else {
-            entorno.dibujarImagen(imagenIzq, x, y, 0, 0.07);
+        try {
+            if (mirandoDerecha) {
+                entorno.dibujarImagen(imagenDer, x, y, 0, 0.07);
+            } else {
+                entorno.dibujarImagen(imagenIzq, x, y, 0, 0.07);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error al dibujar el Mago: fallo en renderizado o acceso a la imagen", e);
         }
     }
 
@@ -64,7 +72,4 @@ public class Mago {
     public void recibirDaño(int cantidad) {
         vida = Math.max(0, vida - cantidad);
     }
-
-
-
 }

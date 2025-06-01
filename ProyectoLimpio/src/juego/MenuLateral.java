@@ -9,14 +9,22 @@ public class MenuLateral {
 
 
     public MenuLateral(int x, int y, Image img) {
-        this.x = x;
-        this.y = y;
-        this.img = img;
+        try {
+            this.x = x;
+            this.y = y;
+            this.img = img;
+        } catch (Exception e) {
+            throw new RuntimeException("Error al crear MenuLateral: no se pudo inicializar el menú lateral o su imagen", e);
+        }
     }
 
     public void dibujar(Entorno entorno) {
-        if (img != null) {
-            entorno.dibujarImagen(img, x, y, 0, 0.20);
+        try {
+            if (img != null) {
+                entorno.dibujarImagen(img, x, y, 0, 0.20);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error al dibujar el MenuLateral: fallo en renderizado o acceso a la imagen", e);
         }
     }
 

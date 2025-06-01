@@ -19,17 +19,21 @@ public class Menu {
 
     public Menu(int x, int y, int ancho, int alto, String rutaFondo, String rutaFuego, String rutaAgua,
                 int anchoBotonFuego, int altoBotonFuego, int anchoBotonAgua, int altoBotonAgua) {
-        this.x = x;
-        this.y = y;
-        this.ancho = ancho;
-        this.alto = alto;
-        this.imagenFondo = Herramientas.cargarImagen(rutaFondo);
-        Image imgFuego = Herramientas.cargarImagen(rutaFuego);
-        Image imgAgua = Herramientas.cargarImagen(rutaAgua);
-        this.botonFuego = new Boton(FUEGO_X, FUEGO_Y, anchoBotonFuego, altoBotonFuego, imgFuego);
-        this.botonAgua = new Boton(AGUA_X, AGUA_Y, anchoBotonAgua, altoBotonAgua, imgAgua);
-        this.barraVida = new Barra(400, 558, 180, 15, new Color(60, 30, 0), new Color(205, 30, 30));
-        this.barraMana = new Barra(400, 580, 180, 15, new Color(60, 30, 0), new Color(0, 100, 255));
+        try {
+            this.x = x;
+            this.y = y;
+            this.ancho = ancho;
+            this.alto = alto;
+            this.imagenFondo = Herramientas.cargarImagen(rutaFondo);
+            Image imgFuego = Herramientas.cargarImagen(rutaFuego);
+            Image imgAgua = Herramientas.cargarImagen(rutaAgua);
+            this.botonFuego = new Boton(FUEGO_X, FUEGO_Y, anchoBotonFuego, altoBotonFuego, imgFuego);
+            this.botonAgua = new Boton(AGUA_X, AGUA_Y, anchoBotonAgua, altoBotonAgua, imgAgua);
+            this.barraVida = new Barra(400, 558, 180, 15, new Color(60, 30, 0), new Color(205, 30, 30));
+            this.barraMana = new Barra(400, 580, 180, 15, new Color(60, 30, 0), new Color(0, 100, 255));
+        } catch (Exception e) {
+            throw new RuntimeException("Error al crear Menu: no se pudo cargar alguna imagen o inicializar los botones/barras", e);
+        }
     }
 
     public void setHechizoSeleccionado(String hechizo) {

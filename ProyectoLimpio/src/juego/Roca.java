@@ -14,10 +14,14 @@ public class Roca {
     public int getY() { return y; }
     
     public Roca(int x, int y, boolean colision) {
-        this.x=x;        
-        this.y=y;
-        this.colision=colision;        
-        this.imagen=Herramientas.cargarImagen("assets/roca.png");
+        try {
+            this.x = x;
+            this.y = y;
+            this.colision = colision;
+            this.imagen = Herramientas.cargarImagen("assets/roca.png");
+        } catch (Exception e) {
+            throw new RuntimeException("Error al crear la roca: no se pudo cargar la imagen o inicializar el objeto", e);
+        }
     }    
     
     public void dibujarse(Entorno entorno) {
