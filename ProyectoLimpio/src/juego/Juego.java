@@ -23,6 +23,9 @@ public class Juego extends InterfaceJuego {
     private static final int BARRERA_DURACION = 300;
     private static final int MAX_MURCIELAGOS_VIVOS = 10;
     private static final int TOTAL_MURCIELAGOS = 60;
+    private boolean mostrarControles = true;
+    private int tickInicioControles = 0;
+    private final Image imgControles;
 
     public Juego() {
         try {
@@ -33,6 +36,7 @@ public class Juego extends InterfaceJuego {
             imgRafagaAgua = Herramientas.cargarImagen("assets/rafagaDeAgua.png");
             imgBombaFuego = Herramientas.cargarImagen("assets/explosionDeFuego.png");
             imgFinalFlash = Herramientas.cargarImagen("assets/finalFlash.png");
+            this.imgControles = Herramientas.cargarImagen("assets/controles.png");
             hechizoActivo = null;
             this.menu = new Menu(
                 200, 510, 400, 100,
@@ -56,6 +60,8 @@ public class Juego extends InterfaceJuego {
             rocas[5] = new Roca(450, 50, false);
             gestorMurcielagos = new GestorMurcielagos(MAX_MURCIELAGOS_VIVOS, TOTAL_MURCIELAGOS);
             this.entorno.iniciar();
+            this.tickInicioControles = 0;
+            this.mostrarControles = true;
         } catch (Exception e) {
             throw new RuntimeException("Error al crear Juego: fallo en la inicialización de recursos, entidades o entorno gráfico", e);
         }
@@ -78,6 +84,14 @@ public class Juego extends InterfaceJuego {
     public void tick() {
         try {
             tickActual = entorno.numeroDeTick();
+            if (mostrarControles) {
+                if (tickInicioControles == 0) tickInicioControles = tickActual;
+                entorno.dibujarImagen(imgControles, 400, 300, 0, 0.7);
+                if (tickActual - tickInicioControles >= 240) { 
+                    mostrarControles = false;
+                }
+                return;
+            }
             if (mago.getVida() <= 0) {
                 Image imgGameOver = Herramientas.cargarImagen("assets/gameOver.png");
                 entorno.dibujarImagen(imgGameOver, 400, 300, 0, 0.7);
